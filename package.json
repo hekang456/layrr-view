@@ -1,0 +1,66 @@
+{
+  "name": "layrr-view",
+  "version": "1.0.0",
+  "description": "AI-powered visual code editor — click any element on your web app and edit with natural language",
+  "type": "module",
+  "bin": {
+    "layrr": "./dist/cli.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "link:global": "pnpm run build && pnpm link --global",
+    "unlink:global": "pnpm run unlink:global",
+    "prepublishOnly": "pnpm run build",
+    "postinstall": "chmod +x node_modules/node-pty/prebuilds/darwin-*/spawn-helper 2>/dev/null || true"
+  },
+  "keywords": [
+    "visual-programming",
+    "visual-editor",
+    "ai-coding",
+    "ai-assisted-development",
+    "code-inspector",
+    "source-mapping",
+    "web-development",
+    "developer-tools",
+    "claude-code",
+    "codex",
+    "reverse-proxy",
+    "overlay",
+    "point-and-click",
+    "natural-language-editing",
+    "git-automation",
+    "cloud-ide",
+    "online-editor"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.2",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.89.0",
+    "@mariozechner/pi-ai": "^0.63.1",
+    "@mariozechner/pi-coding-agent": "^0.63.1",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "element-source": "^0.0.5",
+    "geist": "^1.7.0",
+    "lucide-static": "^0.577.0",
+    "motion": "^12.38.0",
+    "node-pty": "^1.1.0",
+    "open": "^10.0.0",
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "@types/ws": "^8.0.0",
+    "esbuild": "^0.27.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,1488 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>layrr-view 介绍</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css"
+      id="theme"
+    />
+    <style>
+      :root {
+        --bg-1: #0b1020;
+        --bg-2: #111a33;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel-border: rgba(255, 255, 255, 0.12);
+        --accent: #7dd3fc;
+        --accent-2: #c084fc;
+        --good: #86efac;
+        --warn: #fcd34d;
+        --bad: #f87171;
+        --text-soft: rgba(255, 255, 255, 0.72);
+      }
+      body {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(125, 211, 252, 0.16),
+            transparent 32%
+          ),
+          radial-gradient(
+            circle at top right,
+            rgba(192, 132, 252, 0.14),
+            transparent 28%
+          ),
+          linear-gradient(180deg, var(--bg-2), var(--bg-1));
+      }
+      .reveal {
+        font-size: 34px;
+      }
+      .reveal .slides {
+        text-align: left;
+      }
+      .reveal h1,
+      .reveal h2,
+      .reveal h3 {
+        text-transform: none;
+        letter-spacing: -0.02em;
+      }
+      .reveal h1 {
+        font-size: 2.2em;
+      }
+      .reveal h2 {
+        font-size: 1.5em;
+        margin-bottom: 0.5em;
+      }
+      .reveal h3 {
+        font-size: 0.95em;
+        color: var(--accent);
+      }
+      .reveal p,
+      .reveal li,
+      .reveal td,
+      .reveal th {
+        line-height: 1.5;
+      }
+      .reveal ul,
+      .reveal ol {
+        display: block;
+        margin-left: 1.2em;
+      }
+      .hero {
+        display: grid;
+        gap: 24px;
+      }
+      .hero-tag {
+        display: inline-block;
+        padding: 8px 14px;
+        border: 1px solid rgba(125, 211, 252, 0.4);
+        border-radius: 999px;
+        color: var(--accent);
+        background: rgba(125, 211, 252, 0.08);
+        font-size: 0.45em;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .hero-subtitle,
+      .muted {
+        color: var(--text-soft);
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .card {
+        padding: 22px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 18px;
+        backdrop-filter: blur(12px);
+      }
+      .card h3 {
+        margin-top: 0;
+      }
+      .accent {
+        color: var(--accent);
+      }
+      .good {
+        color: var(--good);
+      }
+      .warn {
+        color: var(--warn);
+      }
+      .bad {
+        color: var(--bad);
+      }
+      .small {
+        font-size: 0.64em;
+      }
+      .big-quote {
+        font-size: 1.15em;
+        line-height: 1.5;
+        padding: 28px 30px;
+        border-left: 4px solid var(--accent);
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+      }
+      .highlight-box {
+        font-size: 1.1em;
+        line-height: 1.6;
+        padding: 28px 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(125, 211, 252, 0.12),
+          rgba(192, 132, 252, 0.12)
+        );
+        border: 1px solid rgba(125, 211, 252, 0.25);
+        border-radius: 18px;
+        text-align: center;
+      }
+      .highlight-box .big {
+        font-size: 1.4em;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 12px;
+      }
+      .pain {
+        border-left: 4px solid var(--bad);
+        background: rgba(248, 113, 113, 0.08);
+        padding: 20px 24px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+      }
+      .solution {
+        border-left: 4px solid var(--good);
+        background: rgba(134, 239, 172, 0.08);
+        padding: 20px 24px;
+        border-radius: 14px;
+      }
+      .insight {
+        border-left: 4px solid var(--accent-2);
+        background: rgba(192, 132, 252, 0.08);
+        padding: 20px 24px;
+        border-radius: 14px;
+        margin-top: 16px;
+      }
+      .analogy {
+        border-left: 4px solid var(--warn);
+        background: rgba(252, 211, 77, 0.08);
+        padding: 20px 24px;
+        border-radius: 14px;
+        margin-top: 16px;
+      }
+      .code-demo {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 20px 24px;
+        font-family: 'SF Mono', 'Fira Code', monospace;
+        font-size: 0.6em;
+        line-height: 1.7;
+        overflow-x: auto;
+      }
+      .code-demo .label {
+        color: var(--text-soft);
+        font-size: 0.85em;
+        margin-bottom: 8px;
+        font-family: Inter, system-ui, sans-serif;
+      }
+      .code-demo .arrow {
+        color: var(--accent);
+        margin: 6px 0;
+      }
+      .code-demo .old {
+        color: var(--bad);
+        text-decoration: line-through;
+        opacity: 0.7;
+      }
+      .code-demo .new {
+        color: var(--good);
+      }
+      .step-flow {
+        display: flex;
+        gap: 16px;
+        align-items: stretch;
+        margin-top: 20px;
+      }
+      .step-flow .step-item {
+        flex: 1;
+        padding: 20px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 16px;
+        text-align: center;
+      }
+      .step-flow .step-item .step-num {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        border-radius: 50%;
+        background: rgba(125, 211, 252, 0.15);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.7em;
+        margin-bottom: 10px;
+      }
+      .step-flow .step-item .step-title {
+        font-weight: 700;
+        font-size: 0.85em;
+        margin-bottom: 6px;
+      }
+      .step-flow .step-item .step-desc {
+        font-size: 0.6em;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+      .step-flow .step-arrow {
+        display: flex;
+        align-items: center;
+        color: var(--accent);
+        font-size: 1.5em;
+        flex-shrink: 0;
+      }
+      .capability-card {
+        padding: 24px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 18px;
+        backdrop-filter: blur(12px);
+        text-align: center;
+      }
+      .capability-card .cap-icon {
+        font-size: 2em;
+        margin-bottom: 10px;
+      }
+      .capability-card .cap-title {
+        font-weight: 700;
+        font-size: 0.85em;
+        margin-bottom: 8px;
+      }
+      .capability-card .cap-desc {
+        font-size: 0.55em;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+      .takeaway {
+        padding: 24px 28px;
+        background: var(--panel);
+        border-radius: 18px;
+        border: 1px solid var(--panel-border);
+        margin-bottom: 14px;
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+      .takeaway .takeaway-num {
+        font-size: 2em;
+        font-weight: 800;
+        color: var(--accent);
+        flex-shrink: 0;
+        width: 50px;
+        text-align: center;
+      }
+      .takeaway .takeaway-body {
+        flex: 1;
+      }
+      .takeaway .takeaway-title {
+        font-weight: 700;
+        font-size: 0.9em;
+        margin-bottom: 4px;
+      }
+      .takeaway .takeaway-desc {
+        font-size: 0.58em;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+      .diagram-viewport {
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        overflow: auto;
+        height: 60vh;
+        min-height: 280px;
+      }
+      .diagram-viewport .mermaid {
+        padding: 20px;
+        transform-origin: top left;
+        transition: transform 0.15s ease;
+        min-width: max-content;
+      }
+      .diagram-viewport .mermaid svg {
+        max-width: none !important;
+      }
+      .diagram-controls {
+        position: sticky;
+        top: 0;
+        right: 0;
+        float: right;
+        z-index: 10;
+        display: flex;
+        gap: 4px;
+        padding: 8px;
+      }
+      .diagram-controls button {
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(17, 26, 51, 0.9);
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(8px);
+        line-height: 1;
+      }
+      .diagram-controls button:hover {
+        background: rgba(125, 211, 252, 0.2);
+        border-color: rgba(125, 211, 252, 0.4);
+      }
+      .diagram-controls .zoom-level {
+        font-size: 11px;
+        color: var(--text-soft);
+        display: flex;
+        align-items: center;
+        padding: 0 6px;
+        min-width: 42px;
+        justify-content: center;
+      }
+      .mermaid-error {
+        color: #f87171;
+        font-size: 0.8em;
+      }
+      .reveal .progress {
+        color: var(--accent);
+      }
+      .reveal .slide-number {
+        background: rgba(17, 26, 51, 0.88);
+      }
+      @media (max-width: 1200px) {
+        .reveal {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- Slide 1: 封面 -->
+        <section>
+          <div class="hero">
+            <span class="hero-tag">layrr-view</span>
+            <h1>在页面上点一下，<br />AI 就帮你改好代码</h1>
+            <p class="hero-subtitle">
+              不用翻文件、不用找行号<br />直接在运行的页面上选中目标，告诉 AI
+              你想改什么
+            </p>
+            <div class="highlight-box fragment fade-up">
+              <span class="big">点击 + 一句话 = 代码改好了</span>
+              <span class="muted">从"看到问题"到"修好问题"，只需要两步</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 2: 痛点 -->
+        <section>
+          <h2>改个按钮颜色，你要几步？</h2>
+          <div class="pain small">
+            <p>😅 页面上有个按钮颜色不对</p>
+            <p>→ 切到编辑器，猜这个按钮在哪个文件</p>
+            <p>→ 打开文件，搜索关键词，翻了 200 行才找到</p>
+            <p>→ 改了一行，刷新页面……咦，没变？</p>
+            <p>→ 原来改错文件了 😵</p>
+          </div>
+          <div class="highlight-box small fragment fade-up">
+            <span class="big" style="color: var(--accent)"
+              >如果直接在页面上点那个按钮，<br />告诉 AI "改成蓝色"
+              就好了呢？</span
+            >
+          </div>
+        </section>
+
+        <!-- Slide 3: 3步流程 -->
+        <section>
+          <h2>layrr-view：3 步搞定一次修改</h2>
+          <div class="step-flow">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-title accent">点一下</div>
+              <div class="step-desc">在运行的页面上<br />点击你想改的元素</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-title" style="color: var(--accent-2)">
+                说一句
+              </div>
+              <div class="step-desc">输入你想改什么<br />比如"改成蓝色"</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-title good">搞定了</div>
+              <div class="step-desc">AI 自动定位源码<br />修改 + 刷新页面</div>
+            </div>
+          </div>
+          <div class="insight small fragment fade-up">
+            <strong>💡 不满意？一键回退。</strong
+            >每次修改都有"存档"，随时可以回到修改前的状态。
+          </div>
+        </section>
+
+        <!-- Slide 4: 3个核心能力 -->
+        <section>
+          <h2>它怎么做到的？3 个核心能力</h2>
+          <div class="grid-3">
+            <div class="capability-card">
+              <div class="cap-icon">🎯</div>
+              <div class="cap-title accent">点击即定位</div>
+              <div class="cap-desc">
+                你在页面上点哪个元素，系统就知道它在源码的哪个文件、哪一行
+              </div>
+            </div>
+            <div class="capability-card">
+              <div class="cap-icon">🤖</div>
+              <div class="cap-title" style="color: var(--accent-2)">
+                AI 精准修改
+              </div>
+              <div class="cap-desc">
+                不是把所有代码丢给 AI，而是只给相关的上下文，让 AI 改得准
+              </div>
+            </div>
+            <div class="capability-card">
+              <div class="cap-icon">🛡️</div>
+              <div class="cap-title good">安全回退</div>
+              <div class="cap-desc">
+                每次修改自动"存档"，改坏了随时回退，永远不会丢代码
+              </div>
+            </div>
+          </div>
+          <p
+            class="small muted fragment fade-up"
+            style="margin-top: 20px; text-align: center"
+          >
+            接下来逐个拆解 ↓
+          </p>
+        </section>
+
+        <!-- Slide 5: 能力① 点击即定位 -->
+        <section>
+          <h2>能力 ① 点击即定位</h2>
+          <div class="highlight-box">
+            <span class="big">你点页面上的按钮 → 系统找到源码第 42 行</span>
+            <span class="muted">从 DOM 元素到源码位置，自动完成映射</span>
+          </div>
+          <div class="diagram-viewport" style="margin-top: 20px">
+            <div class="diagram-controls">
+              <button class="zoom-out" title="缩小">−</button>
+              <span class="zoom-level">100%</span>
+              <button class="zoom-in" title="放大">+</button>
+              <button class="zoom-reset" title="重置">↺</button>
+            </div>
+            <!-- prettier-ignore -->
+            <div class="mermaid small">
+flowchart LR
+  Click["用户点击页面元素"] --> Try["自动尝试多种定位方式\nLocatorJS / DevTools / Fiber 等"] --> Result["精确到文件 + 行号"]
+  Try -->|"都没命中"| Fallback["后端全局搜索\n用标签+文本在项目中 grep"]
+  Fallback --> Result
+
+  style Click fill:#1e3a5f,stroke:#60a5fa,color:#fff
+  style Try fill:#3b1f6e,stroke:#a78bfa,color:#fff
+  style Result fill:#059669,stroke:#34d399,color:#fff
+  style Fallback fill:#b45309,stroke:#fbbf24,color:#fff
+            </div>
+          </div>
+          <div class="insight small">
+            <strong>💡 关键：</strong>定位越准，后面 AI
+            改得越准。所以系统会优先用最精确的方式，实在不行才 fallback 到搜索。
+          </div>
+        </section>
+
+        <!-- Slide 5-1: 定位技术详解 -->
+        <section>
+          <h2>源码定位：6种策略层层兜底</h2>
+          <div class="small muted" style="margin-bottom: 16px">
+            前端 overlay/source.ts 实现的多策略定位链
+          </div>
+          <div class="grid-2" style="gap: 12px">
+            <div class="card small" style="padding: 16px">
+              <h3 class="accent" style="font-size: 0.9em">1. LocatorJS 属性</h3>
+              <div style="margin-top: 8px; color: var(--text-soft)">
+                读取 data-locatorjs，直接解析 file:line:column
+              </div>
+              <div
+                style="margin-top: 6px; color: var(--good); font-size: 0.75em"
+              >
+                ✓ 编译期插桩，精度最高
+              </div>
+            </div>
+            <div class="card small" style="padding: 16px">
+              <h3 style="color: var(--accent-2); font-size: 0.9em">
+                2. LocatorJS ID 索引
+              </h3>
+              <div style="margin-top: 8px; color: var(--text-soft)">
+                从 window.__LOCATOR_DATA__ 查询表达式位置
+              </div>
+              <div
+                style="margin-top: 6px; color: var(--good); font-size: 0.75em"
+              >
+                ✓ 另一种注入形式
+              </div>
+            </div>
+            <div class="card small" style="padding: 16px">
+              <h3 style="color: var(--warn); font-size: 0.9em">
+                3. React Inspector
+              </h3>
+              <div style="margin-top: 8px; color: var(--text-soft)">
+                读取 data-react-inspector / data-inspector-line
+              </div>
+              <div
+                style="margin-top: 6px; color: var(--warn); font-size: 0.75em"
+              >
+                ⚡ React 开发态插件提供
+              </div>
+            </div>
+            <div class="card small" style="padding: 16px">
+              <h3 style="color: var(--warn); font-size: 0.9em">
+                4. Vue Inspector
+              </h3>
+              <div style="margin-top: 8px; color: var(--text-soft)">
+                读取 data-v-inspector 属性
+              </div>
+              <div
+                style="margin-top: 6px; color: var(--warn); font-size: 0.75em"
+              >
+                ⚡ Vue 生态开发能力
+              </div>
+            </div>
+            <div class="card small" style="padding: 16px">
+              <h3 style="color: var(--accent-2); font-size: 0.9em">
+                5. element-source 库
+              </h3>
+              <div style="margin-top: 8px; color: var(--text-soft)">
+                运行时库解析 Vue/Svelte/Solid/Preact
+              </div>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--accent-2);
+                  font-size: 0.75em;
+                "
+              >
+                → 框架无关运行时解析
+              </div>
+            </div>
+            <div class="card small" style="padding: 16px">
+              <h3 style="color: var(--good); font-size: 0.9em">
+                6. Fiber/Vue Runtime
+              </h3>
+              <div style="margin-top: 8px; color: var(--text-soft)">
+                React _debugSource / Vue __file
+              </div>
+              <div
+                style="margin-top: 6px; color: var(--good); font-size: 0.75em"
+              >
+                → 开发模式内部结构
+              </div>
+            </div>
+          </div>
+          <div class="insight small" style="margin-top: 16px">
+            <strong>🎯 策略优先级：</strong>显式注入属性 → 运行时解析 →
+            内部调试信息。前端失败则由后端 source-mapper.ts 继续兜底搜索。
+          </div>
+        </section>
+
+        <!-- Slide 5-2: 定位实战案例 -->
+        <section>
+          <h2>定位实战：一个按钮的"寻根之旅"</h2>
+          <div class="code-demo" style="margin-top: 16px">
+            <div class="label">🖱️ 用户点击了页面上的这个按钮：</div>
+            <div style="color: var(--accent)">
+              &lt;button class="btn-primary"
+              data-testid="submit-btn"&gt;立即购买&lt;/button&gt;
+            </div>
+            <div class="arrow">↓ 系统开始层层定位：</div>
+            <div class="label">✅ Step 1: LocatorJS 命中</div>
+            <div style="color: var(--good)">
+              → src/components/PurchaseButton.tsx:23
+            </div>
+            <div class="label">📋 同时收集的辅助信息：</div>
+            <div>• className: "btn-primary"</div>
+            <div>• data-testid: "submit-btn"</div>
+            <div>• 文本内容: "立即购买"</div>
+            <div>• 父组件: &lt;ProductCard /&gt;</div>
+          </div>
+          <div class="solution small" style="margin-top: 16px">
+            <strong>✨ 结果：</strong>0.3 秒内精确定位到源码第 23
+            行，附带完整的上下文信息供 AI 参考
+          </div>
+        </section>
+
+        <!-- Slide 6: 能力② AI精准修改 -->
+        <section>
+          <h2>能力 ② AI 精准修改</h2>
+          <div class="highlight-box">
+            <span class="big">不是"把代码丢给 AI 碰运气"</span>
+            <span class="muted">而是根据定位精度，给 AI 刚好够用的上下文</span>
+          </div>
+          <div class="code-demo" style="margin-top: 20px">
+            <div class="label">👤 你说的话：</div>
+            <div>"把提交按钮改成蓝色"</div>
+            <div class="arrow">↓ AI 收到的不是这句话，而是：</div>
+            <div class="label">📦 AI 实际收到的上下文：</div>
+            <div>文件：src/components/Button.tsx 第 42 行</div>
+            <div>元素：&lt;button class="submit"&gt;提交&lt;/button&gt;</div>
+            <div>周围代码：3 行上下文</div>
+            <div class="arrow">↓ AI 修改：</div>
+            <div class="label">✏️ 修改结果：</div>
+            <div>
+              <span class="old">className="bg-red-500"</span> →
+              <span class="new">className="bg-blue-500"</span>
+            </div>
+          </div>
+          <div class="insight small">
+            <strong>💡 关键：</strong>定位准 → 给少量上下文（AI
+            不被干扰）；定位不准 → 补全更多信息（class、selector、视觉位置）帮
+            AI 推断。
+          </div>
+        </section>
+
+        <!-- Slide 6-1: Agent 系统架构 -->
+        <section>
+          <h2>Agent 系统：4种执行后端</h2>
+          <div class="small muted" style="margin-bottom: 16px">
+            src/agents/ 目录下的统一抽象与多实现
+          </div>
+          <div class="grid-2" style="gap: 12px">
+            <div class="card small" style="padding: 14px">
+              <h3 class="accent" style="font-size: 0.85em">
+                🤖 Claude Code CLI
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                本地 Claude CLI 子进程调用
+              </div>
+              <div
+                style="margin-top: 4px; color: var(--good); font-size: 0.65em"
+              >
+                ✓ 集成简单，能力成熟
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--accent-2); font-size: 0.85em">
+                ⚡ Codex CLI
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                OpenAI Codex exec --full-auto
+              </div>
+              <div
+                style="
+                  margin-top: 4px;
+                  color: var(--accent-2);
+                  font-size: 0.65em;
+                "
+              >
+                → 封装最薄，调用直接
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--warn); font-size: 0.85em">
+                � Pi Mono SDK
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                进程内 SDK 嵌入式 Agent
+              </div>
+              <div
+                style="margin-top: 4px; color: var(--warn); font-size: 0.65em"
+              >
+                → 依赖 @mariozechner/pi-coding-agent
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--good); font-size: 0.85em">
+                🏠 layrr Runtime
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                自建 Agentic Loop + 工具系统
+              </div>
+              <div
+                style="margin-top: 4px; color: var(--good); font-size: 0.65em"
+              >
+                ✓ 可控性最强，工具最完整
+              </div>
+            </div>
+          </div>
+          <div class="code-demo" style="margin-top: 16px; font-size: 0.55em">
+            <div class="label">Agent 接口定义 (base.ts)：</div>
+            <div>interface Agent {</div>
+            <div style="margin-left: 12px">readonly name: AgentName</div>
+            <div style="margin-left: 12px">readonly displayName: string</div>
+            <div style="margin-left: 12px">
+              applyEdit(request: PendingEditRequest): Promise&lt;{success,
+              message}&gt;
+            </div>
+            <div>}</div>
+          </div>
+        </section>
+
+        <!-- Slide 6-2: Prompt 构建与质量分级 -->
+        <section>
+          <h2>Prompt 工程：质量驱动的上下文策略</h2>
+          <div class="small muted" style="margin-bottom: 12px">
+            src/agents/prompt.ts 根据 sourceMatchQuality 动态构建
+          </div>
+          <div class="step-flow" style="margin-top: 12px; gap: 12px">
+            <div class="step-item" style="padding: 14px">
+              <div class="step-title accent" style="font-size: 0.8em">
+                precise
+              </div>
+              <div class="step-desc" style="font-size: 0.6em">高精度定位</div>
+              <ul
+                class="small"
+                style="margin-top: 8px; text-align: left; font-size: 0.6em"
+              >
+                <li>直接给文件路径</li>
+                <li>精简上下文</li>
+                <li>强调从该文件开始</li>
+              </ul>
+            </div>
+            <div class="step-item" style="padding: 14px">
+              <div
+                class="step-title"
+                style="color: var(--accent-2); font-size: 0.8em"
+              >
+                fallback
+              </div>
+              <div class="step-desc" style="font-size: 0.6em">近似定位</div>
+              <ul
+                class="small"
+                style="margin-top: 8px; text-align: left; font-size: 0.6em"
+              >
+                <li>保留 breadcrumb</li>
+                <li>保留 selector</li>
+                <li>保留 visual position</li>
+              </ul>
+            </div>
+            <div class="step-item" style="padding: 14px">
+              <div
+                class="step-title"
+                style="color: var(--warn); font-size: 0.8em"
+              >
+                server search
+              </div>
+              <div class="step-desc" style="font-size: 0.6em">搜索定位</div>
+              <ul
+                class="small"
+                style="margin-top: 8px; text-align: left; font-size: 0.6em"
+              >
+                <li>文件只是候选</li>
+                <li>需要主动读取搜索</li>
+                <li>更多辅助线索</li>
+              </ul>
+            </div>
+          </div>
+          <div class="solution small" style="margin-top: 16px">
+            <strong>🛡️ contextLooksLikeSignature()：</strong>识别
+            import/interface/type/props 区域，提醒 AI "这里可能不是最终渲染点"
+          </div>
+        </section>
+
+        <!-- Slide 7: 能力③ 安全回退 -->
+        <section>
+          <h2>能力 ③ 安全回退</h2>
+          <div class="highlight-box">
+            <span class="big">像游戏存档一样，随时读档</span>
+            <span class="muted">每次 AI 修改都自动存档，改坏了也不怕</span>
+          </div>
+          <div class="analogy small">
+            <strong>🎮 类比：</strong>玩游戏时，打 Boss 前你会先存档。layrr-view
+            就是每次 AI 修改前自动帮你"存档"——改好了继续，改坏了读档重来。
+          </div>
+          <div class="diagram-viewport" style="margin-top: 16px">
+            <div class="diagram-controls">
+              <button class="zoom-out" title="缩小">−</button>
+              <span class="zoom-level">100%</span>
+              <button class="zoom-in" title="放大">+</button>
+              <button class="zoom-reset" title="重置">↺</button>
+            </div>
+            <!-- prettier-ignore -->
+            <div class="mermaid small">
+flowchart LR
+  Edit["AI 修改代码"] --> Save["自动 git commit\n相当于存档"]
+  Save --> Check{"满意吗?"}
+  Check -->|"满意"| Go["继续下一轮"]
+  Check -->|"不满意"| Revert["一键回退\n回到上一个存档"]
+
+  style Save fill:#059669,stroke:#34d399,color:#fff
+  style Revert fill:#991b1b,stroke:#f87171,color:#fff
+  style Go fill:#1e3a5f,stroke:#60a5fa,color:#fff
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 7-1: Git 版本控制机制 -->
+        <section>
+          <h2>Git 集成：4种版本操作</h2>
+          <div class="small muted" style="margin-bottom: 12px">
+            src/server/version.ts 实现的安全版本管理
+          </div>
+          <div class="grid-2" style="gap: 12px">
+            <div class="card small" style="padding: 14px">
+              <h3 class="accent" style="font-size: 0.85em">👁️ Preview 预览</h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                git checkout &lt;hash&gt; --detach
+              </div>
+              <div
+                style="margin-top: 4px; color: var(--accent); font-size: 0.65em"
+              >
+                → 进入 detached HEAD 只读预览
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--accent-2); font-size: 0.85em">
+                ↩️ Restore 恢复
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                git checkout &lt;originalBranch&gt;
+              </div>
+              <div
+                style="
+                  margin-top: 4px;
+                  color: var(--accent-2);
+                  font-size: 0.65em;
+                "
+              >
+                → 从预览态回到原始分支
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--warn); font-size: 0.85em">
+                ⏪ Revert 回滚
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                git reset --hard &lt;hash&gt;
+              </div>
+              <div
+                style="margin-top: 4px; color: var(--warn); font-size: 0.65em"
+              >
+                → 永久回滚到指定版本
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--good); font-size: 0.85em">
+                🚀 Commit 推送
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                git push -u origin HEAD
+              </div>
+              <div
+                style="margin-top: 4px; color: var(--good); font-size: 0.65em"
+              >
+                → 推送当前 HEAD 到远程
+              </div>
+            </div>
+          </div>
+          <div class="solution small" style="margin-top: 16px">
+            <strong>⚡ 关键设计：</strong>preview/restore/revert 都是<strong
+              >先发 WS 结果，再执行 Git</strong
+            >。避免 checkout/reset 触发页面刷新导致消息丢失。
+          </div>
+        </section>
+
+        <!-- Slide 7-2: 自动提交与脏文件处理 -->
+        <section>
+          <h2>自动提交：精准追踪每轮修改</h2>
+          <div class="small muted" style="margin-bottom: 12px">
+            cli.ts editLoop 中的 Git 自动化逻辑
+          </div>
+          <div class="code-demo" style="font-size: 0.55em; margin-top: 12px">
+            <div class="label">editLoop 执行流程：</div>
+            <div>1. 快照当前脏文件集合（git status）</div>
+            <div>2. buildPrompt() + agent.applyEdit()</div>
+            <div>3. 比较编辑前后文件变化</div>
+            <div style="color: var(--good)">
+              4. git add + git commit "[layrr] &lt;instruction&gt;"
+            </div>
+            <div>5. notifyComplete() 通知前端</div>
+          </div>
+          <div class="grid-2" style="margin-top: 16px">
+            <div class="pain small" style="margin-bottom: 0">
+              <strong>🎯 脏文件快照</strong><br />
+              <span style="font-size: 0.75em"
+                >记录编辑前后的脏文件集合，<strong
+                  >只提交 AI 本轮新增的改动</strong
+                >，不误提交用户原本的本地变更</span
+              >
+            </div>
+            <div class="solution small">
+              <strong>🏷️ 提交信息规范</strong><br />
+              <span style="font-size: 0.75em"
+                ><code>[layrr] &lt;用户指令摘要&gt;</code>，清晰区分 AI
+                提交与用户手写提交</span
+              >
+            </div>
+          </div>
+          <div class="analogy small" style="margin-top: 12px">
+            <strong>� 启动时 Git 初始化：</strong>检查 git 仓库、创建 initial
+            commit、如有未提交改动则创建 pre-layrr snapshot
+          </div>
+        </section>
+
+        <!-- Slide 8: 零侵入原理 -->
+        <section>
+          <h2>幕后：怎么做到"零侵入"？</h2>
+          <p class="small muted">
+            你的项目代码完全不受影响，layrr-view 是怎么做到的？
+          </p>
+          <div
+            class="analogy small"
+            style="margin-top: 12px; margin-bottom: 16px"
+          >
+            <strong>🎭 类比：</strong
+            >就像给网页戴了一副"隐形眼镜"——你的页面照常运行，但多了一个悬浮工具栏。摘掉眼镜（关闭
+            layrr-view），页面完全恢复原样。
+          </div>
+          <div class="diagram-viewport">
+            <div class="diagram-controls">
+              <button class="zoom-out" title="缩小">−</button>
+              <span class="zoom-level">100%</span>
+              <button class="zoom-in" title="放大">+</button>
+              <button class="zoom-reset" title="重置">↺</button>
+            </div>
+            <!-- prettier-ignore -->
+            <div class="mermaid small">
+flowchart LR
+  Browser["浏览器"] -->|"请求页面"| Proxy["layrr-view\n反向代理"]
+  Proxy -->|"转发请求"| DevServer["你的 dev server"]
+  DevServer -->|"返回 HTML"| Proxy
+  Proxy -->|"注入工具栏脚本后返回"| Browser
+  Browser <-->|"WebSocket 实时通信"| Proxy
+
+  style Proxy fill:#1e3a5f,stroke:#60a5fa,color:#fff
+  style Browser fill:#1e293b,stroke:#64748b,color:#fff
+  style DevServer fill:#1e293b,stroke:#64748b,color:#fff
+            </div>
+          </div>
+          <div class="insight small">
+            <strong>💡 关键：</strong>你的源码一个字都没改。layrr-view 只是在
+            HTML 经过代理时"加料"，关掉代理就恢复原样。
+          </div>
+        </section>
+
+        <!-- Slide 8-1: 代理层详解 -->
+        <section>
+          <h2>proxy.ts：不只是反向代理</h2>
+          <div class="small muted" style="margin-bottom: 12px">
+            src/server/proxy.ts 的多重职责
+          </div>
+          <div class="grid-2" style="gap: 12px">
+            <div class="card small" style="padding: 14px">
+              <h3 class="accent" style="font-size: 0.85em">🌐 HTTP 反向代理</h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                浏览器 → proxyPort → targetPort (dev server)
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--accent-2); font-size: 0.85em">
+                💉 HTML 注入
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                在 &lt;/body&gt; 前插入 overlay.js
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--warn); font-size: 0.85em">
+                📡 WebSocket 分流
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                /__layrr__/ws → Pair WS<br />其他 → dev server HMR
+              </div>
+            </div>
+            <div class="card small" style="padding: 14px">
+              <h3 style="color: var(--good); font-size: 0.85em">
+                � 静态资源服务
+              </h3>
+              <div
+                style="
+                  margin-top: 6px;
+                  color: var(--text-soft);
+                  font-size: 0.7em;
+                "
+              >
+                /__layrr__/overlay.js<br />/__layrr__/fonts/*
+              </div>
+            </div>
+          </div>
+          <div class="code-demo" style="margin-top: 16px; font-size: 0.55em">
+            <div class="label">注入的脚本（在 HTML 响应中）：</div>
+            <div>
+              &lt;script&gt;window.__PAIR_WS_PORT__ =
+              ${proxyPort};&lt;/script&gt;
+            </div>
+            <div>&lt;script src="/__layrr__/overlay.js"&gt;&lt;/script&gt;</div>
+          </div>
+          <div class="insight small" style="margin-top: 12px">
+            <strong>🔑 关键设计：</strong>WebSocket 分流确保 Overlay 与 Vite HMR
+            / webpack dev server 热更新可以共存，互不干扰
+          </div>
+        </section>
+
+        <!-- Slide 8-2: Overlay 隔离策略 -->
+        <section>
+          <h2>Overlay 隔离：不污染宿主页面</h2>
+          <div class="small muted" style="margin-bottom: 12px">
+            overlay/ 目录下的运行时隔离机制
+          </div>
+          <div
+            class="step-flow"
+            style="flex-direction: column; gap: 10px; margin-top: 12px"
+          >
+            <div
+              class="step-item"
+              style="
+                text-align: left;
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 12px;
+              "
+            >
+              <div class="step-num" style="margin-bottom: 0; flex-shrink: 0">
+                1
+              </div>
+              <div>
+                <div class="step-title accent" style="font-size: 0.85em">
+                  命名空间隔离
+                </div>
+                <div class="step-desc" style="font-size: 0.7em">
+                  所有节点类名和 ID 都以
+                  <code>__layrr</code> 为前缀，避免与宿主页面 CSS 冲突
+                </div>
+              </div>
+            </div>
+            <div
+              class="step-item"
+              style="
+                text-align: left;
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 12px;
+              "
+            >
+              <div class="step-num" style="margin-bottom: 0; flex-shrink: 0">
+                2
+              </div>
+              <div>
+                <div
+                  class="step-title"
+                  style="color: var(--accent-2); font-size: 0.85em"
+                >
+                  样式主动注入
+                </div>
+                <div class="step-desc" style="font-size: 0.7em">
+                  通过 styles.ts 注入完整 CSS，不依赖宿主页面提供任何样式基础
+                </div>
+              </div>
+            </div>
+            <div
+              class="step-item"
+              style="
+                text-align: left;
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 12px;
+              "
+            >
+              <div class="step-num" style="margin-bottom: 0; flex-shrink: 0">
+                3
+              </div>
+              <div>
+                <div
+                  class="step-title"
+                  style="color: var(--warn); font-size: 0.85em"
+                >
+                  自身元素过滤
+                </div>
+                <div class="step-desc" style="font-size: 0.7em">
+                  isOwn(el) 判断避免把工具栏按钮当作业务元素选中
+                </div>
+              </div>
+            </div>
+            <div
+              class="step-item"
+              style="
+                text-align: left;
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 12px;
+              "
+            >
+              <div class="step-num" style="margin-bottom: 0; flex-shrink: 0">
+                4
+              </div>
+              <div>
+                <div class="step-title good" style="font-size: 0.85em">
+                  Viewport 定位
+                </div>
+                <div class="step-desc" style="font-size: 0.7em">
+                  高亮框基于 getBoundingClientRect()，不插入业务 DOM 层级
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="solution small" style="margin-top: 16px">
+            <strong>🔄 SPA 兼容：</strong>MutationObserver 监控根节点 + 监听
+            astro:after-swap / sveltekit:navigation-end / popstate
+            事件，路由切换后自动重建
+          </div>
+        </section>
+
+        <!-- Slide 9: 全局架构 -->
+        <section>
+          <h2>全局架构：4 层各司其职</h2>
+          <p class="small muted">前面讲的 3 个能力，在架构里分别对应哪一层？</p>
+          <div class="diagram-viewport" style="margin-top: 12px">
+            <div class="diagram-controls">
+              <button class="zoom-out" title="缩小">−</button>
+              <span class="zoom-level">100%</span>
+              <button class="zoom-in" title="放大">+</button>
+              <button class="zoom-reset" title="重置">↺</button>
+            </div>
+            <!-- prettier-ignore -->
+            <div class="mermaid small">
+flowchart TB
+  subgraph L1["可视采集层 - 点选+定位"]
+    O1["反向代理注入工具栏"] --> O2["用户点选元素"] --> O3["自动定位源码"]
+  end
+  subgraph L2["接入编排层 - 增强上下文"]
+    P1["解析+校正源码路径"] --> P2["补充上下文信息"]
+  end
+  subgraph L3["AI执行层 - 精准修改"]
+    A1["动态构建Prompt"] --> A2["AI Agent执行修改"]
+  end
+  subgraph L4["版本安全层 - 安全回退"]
+    G1["自动git commit"] --> G2["一键回退"]
+  end
+
+  L1 -->|"编辑请求"| L2
+  L2 -->|"增强后的上下文"| L3
+  L3 -->|"修改的文件"| L4
+  L4 -->|"结果"| L1
+
+  style L1 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+  style L2 fill:#3b1f6e,stroke:#a78bfa,color:#fff
+  style L3 fill:#5f3a1e,stroke:#fbbf24,color:#fff
+  style L4 fill:#1e5f3a,stroke:#34d399,color:#fff
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 9-1: 数据流转详解 -->
+        <section>
+          <h2>数据流转：一次修改的完整旅程</h2>
+          <div class="code-demo" style="margin-top: 12px; font-size: 0.52em">
+            <div class="label">🔄 从点击到修改完成的完整流程：</div>
+            <div style="margin-top: 8px; line-height: 1.8">
+              <div>
+                <span style="color: var(--accent)">①</span>
+                <strong>浏览器</strong> → 用户点击，overlay.ts 捕获事件
+              </div>
+              <div>
+                <span style="color: var(--accent)">②</span>
+                <strong>source.ts</strong> → 6种策略定位源码位置
+              </div>
+              <div>
+                <span style="color: var(--accent-2)">③</span>
+                <strong>WebSocket</strong> → PendingEditRequest 发送到后端
+              </div>
+              <div>
+                <span style="color: var(--accent-2)">④</span>
+                <strong>server/index.ts</strong> → 接收请求，进入 editLoop
+              </div>
+              <div>
+                <span style="color: var(--warn)">⑤</span>
+                <strong>source-mapper.ts</strong> → 验证路径，计算
+                sourceMatchQuality
+              </div>
+              <div>
+                <span style="color: var(--warn)">⑥</span>
+                <strong>prompt.ts</strong> → 根据 quality 构建差异化 Prompt
+              </div>
+              <div>
+                <span style="color: var(--good)">⑦</span>
+                <strong>Agent</strong> → Claude/Codex 执行代码修改
+              </div>
+              <div>
+                <span style="color: var(--good)">⑧</span>
+                <strong>version.ts</strong> → git commit 自动存档
+              </div>
+              <div>
+                <span style="color: var(--accent)">⑨</span>
+                <strong>WS 通知</strong> → notifyComplete() 通知前端刷新
+              </div>
+              <div>
+                <span style="color: var(--accent)">⑩</span>
+                <strong>HMR</strong> → 页面热更新，显示修改效果
+              </div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 12px">
+            <div class="card small" style="padding: 12px">
+              <h3 class="accent" style="font-size: 0.8em">
+                📦 PendingEditRequest
+              </h3>
+              <div
+                style="
+                  font-size: 0.6em;
+                  color: var(--text-soft);
+                  margin-top: 6px;
+                "
+              >
+                instruction, elementInfo, sourceLocation, sourceMatchQuality
+              </div>
+            </div>
+            <div class="card small" style="padding: 12px">
+              <h3 style="color: var(--good); font-size: 0.8em">
+                ✅ EditResult
+              </h3>
+              <div
+                style="
+                  font-size: 0.6em;
+                  color: var(--text-soft);
+                  margin-top: 6px;
+                "
+              >
+                success, message, commitHash, filesChanged[]
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 10: 总结 -->
+        <section>
+          <h2>记住这 3 件事</h2>
+          <div class="takeaway">
+            <div class="takeaway-num">1</div>
+            <div class="takeaway-body">
+              <div class="takeaway-title accent">点击即定位</div>
+              <div class="takeaway-desc">
+                从页面元素到源码行号，自动完成映射。多种策略逐级
+                fallback，总有一种能命中。
+              </div>
+            </div>
+          </div>
+          <div class="takeaway">
+            <div class="takeaway-num">2</div>
+            <div class="takeaway-body">
+              <div class="takeaway-title" style="color: var(--accent-2)">
+                精度驱动 Prompt
+              </div>
+              <div class="takeaway-desc">
+                定位准就给精简上下文，定位不准就补全更多信息。AI
+                拿到的永远是"刚好够用"的上下文。
+              </div>
+            </div>
+          </div>
+          <div class="takeaway">
+            <div class="takeaway-num">3</div>
+            <div class="takeaway-body">
+              <div class="takeaway-title good">零侵入 + 安全回退</div>
+              <div class="takeaway-desc">
+                不改你的源码，通过代理注入工具栏。每次修改自动
+                commit，改坏了随时回退。
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        securityLevel: 'loose',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        flowchart: { useMaxWidth: false, curve: 'basis' },
+        sequence: { useMaxWidth: false, wrap: true },
+      });
+
+      let renderCounter = 0;
+
+      function setupZoom(viewport) {
+        const mermaidEl = viewport.querySelector('.mermaid');
+        const btnIn = viewport.querySelector('.zoom-in');
+        const btnOut = viewport.querySelector('.zoom-out');
+        const btnReset = viewport.querySelector('.zoom-reset');
+        const label = viewport.querySelector('.zoom-level');
+        if (!mermaidEl || !btnIn) return;
+        let scale = 1;
+        const STEP = 0.2,
+          MIN = 0.3,
+          MAX = 3;
+        function apply() {
+          mermaidEl.style.transform = `scale(${scale})`;
+          if (label) label.textContent = Math.round(scale * 100) + '%';
+        }
+        btnIn.addEventListener('click', () => {
+          scale = Math.min(MAX, scale + STEP);
+          apply();
+        });
+        btnOut.addEventListener('click', () => {
+          scale = Math.max(MIN, scale - STEP);
+          apply();
+        });
+        btnReset.addEventListener('click', () => {
+          scale = 1;
+          apply();
+          viewport.scrollTo({ top: 0, left: 0 });
+        });
+        viewport.addEventListener(
+          'wheel',
+          (e) => {
+            if (e.ctrlKey || e.metaKey) {
+              e.preventDefault();
+              const delta = e.deltaY > 0 ? -STEP : STEP;
+              scale = Math.max(MIN, Math.min(MAX, scale + delta));
+              apply();
+            }
+          },
+          { passive: false },
+        );
+      }
+
+      async function renderMermaidsInSlide(slide) {
+        if (!slide) return;
+        const nodes = [
+          ...slide.querySelectorAll('.mermaid:not([data-mermaid-rendered])'),
+        ];
+        for (const node of nodes) {
+          const id = `mermaid-svg-${++renderCounter}`;
+          const definition = node.textContent.trim();
+          node.dataset.mermaidRendered = 'rendering';
+          try {
+            const { svg } = await mermaid.render(id, definition);
+            node.innerHTML = svg;
+            node.dataset.mermaidRendered = 'true';
+          } catch (error) {
+            node.dataset.mermaidRendered = 'error';
+            node.innerHTML =
+              '<p class="mermaid-error">图表渲染失败，请检查控制台</p>';
+            console.error('Mermaid render failed:', error);
+          }
+        }
+        const viewports = slide.querySelectorAll('.diagram-viewport');
+        for (const vp of viewports) {
+          if (!vp.dataset.zoomSetup) {
+            setupZoom(vp);
+            vp.dataset.zoomSetup = 'true';
+          }
+        }
+      }
+
+      const deck = new Reveal({
+        hash: true,
+        progress: true,
+        slideNumber: true,
+        controls: true,
+        center: true,
+        transition: 'slide',
+        backgroundTransition: 'fade',
+      });
+
+      await deck.initialize();
+      await renderMermaidsInSlide(deck.getCurrentSlide());
+      deck.on('slidechanged', async (event) => {
+        await renderMermaidsInSlide(event.currentSlide);
+      });
+    </script>
+  </body>
+</html>
