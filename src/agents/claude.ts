@@ -11,6 +11,10 @@ import { buildPrompt } from './prompt.js';
 
 const claudeBin = 'claude';
 
+function quoteShellArg(value: string): string {
+  return `'${value.replace(/'/g, `'\\''`)}'`;
+}
+
 function getClaudeBaseArgs(): string[] {
   return ['--permission-mode', 'acceptEdits'];
 }
@@ -26,7 +30,7 @@ export function getClaudeTerminalLaunchSpec(): AgentTerminalLaunchSpec {
 
 export function checkClaude(): AgentCheckResult {
   try {
-    const result = spawnSync(claudeBin, ['--version'], {
+    const result = spawnSync('/bin/sh', ['-c', 'claude --version'], {
       timeout: 10000,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -70,10 +74,12 @@ export class ClaudeAgent implements Agent {
     const proc = this.currentProc;
     this.currentProc = null;
 
-    // Try graceful termination first
-    proc.kill('SIGTERM');
+    try {
+      process.kill(-proc.pid!, 'SIGTERM');
+    } catch {
+      proc.kill('SIGTERM');
+    }
 
-    // Wait up to 2 seconds for process to exit
     await new Promise<void>((resolve) => {
       const checkInterval = setInterval(() => {
         if (proc.killed) {
@@ -82,11 +88,14 @@ export class ClaudeAgent implements Agent {
         }
       }, 100);
 
-      // Force kill after 2 seconds
       setTimeout(() => {
         clearInterval(checkInterval);
         if (!proc.killed) {
-          proc.kill('SIGKILL');
+          try {
+            process.kill(-proc.pid!, 'SIGKILL');
+          } catch {
+            proc.kill('SIGKILL');
+          }
         }
         resolve();
       }, 2000);
@@ -106,7 +115,7 @@ export class ClaudeAgent implements Agent {
         '--print',
         '--output-format',
         'text',
-        ...getClaudeBaseArgs(),
+        '--dangerously-skip-permissions',
         '--session-id',
         this.sessionId,
         '--no-session-persistence',
@@ -114,10 +123,19 @@ export class ClaudeAgent implements Agent {
         prompt,
       ];
 
-      const proc = spawn(claudeBin, args, {
+      // NOTE: The Claude Code CLI is now distributed as a Bun-compiled native
+      // binary. When spawned directly with piped stdio (no TTY), it never
+      // writes any output and hangs indefinitely. Wrapping the call in a shell
+      // ("/bin/sh -c ...") works around this stdio quirk: the shell handles
+      // stdio negotiation correctly and the binary streams output as expected.
+      // We must NOT touch the terminal-mode launch spec — that path runs inside
+      // a real PTY where the binary already works fine.
+      const shellCommand = [claudeBin, ...args.map(quoteShellArg)].join(' ');
+      const proc = spawn('/bin/sh', ['-c', shellCommand], {
         cwd: this.projectRoot,
         stdio: ['ignore', 'pipe', 'pipe'],
         env: { ...process.env },
+        detached: true,
       });
 
       this.currentProc = proc;
@@ -176,7 +194,11 @@ export class ClaudeAgent implements Agent {
         if (this.currentProc === proc) {
           this.currentProc = null;
         }
-        proc.kill('SIGKILL');
+        try {
+          process.kill(-proc.pid!, 'SIGKILL');
+        } catch {
+          proc.kill('SIGKILL');
+        }
         resolve({ success: false, message: 'Edit timed out after 60 seconds' });
       }, 60000);
     });
